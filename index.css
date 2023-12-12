@@ -23,11 +23,32 @@ body {
     scroll-behavior: smooth;
 }
 
+.loading {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading.hidden {
+    width: 0;
+    height: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
 .wrapper {
     width: 100%;
     max-width: 1200px;
     position: relative;
     margin: 0 auto;
+    display: block
+}
+
+.wrapper.hidden {
+    display: none;
 }
 
 .header {
