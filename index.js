@@ -5,6 +5,8 @@ about_scroll = 0;
 exp_scroll = 450;
 projects_scroll = 2130;
 
+let fetched_data = "";
+
 function changeOnNav(new_nav) {
   on_nav.classList.remove("on");
   on_nav = new_nav;
@@ -40,7 +42,7 @@ function fetchData() {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
+      fetched_data = JSON.stringify(data);
       document.querySelector(".loading").classList.add("hidden");
       let wrapper = document.querySelector(".wrapper");
       wrapper.classList.remove("hidden");
@@ -110,3 +112,17 @@ function fetchData() {
       fetchData();
     });
 }
+
+function downloadTextAsJson(text, fileName) {
+  const blob = new Blob([text], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+document.querySelector(".download-button").onclick = () => {
+  downloadTextAsJson(fetched_data, "data.json");
+};
