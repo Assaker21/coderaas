@@ -32,7 +32,7 @@ window.addEventListener("scroll", function (event) {
 fetchData();
 
 function fetchData() {
-  fetch("http://localhost:3000/portfolio")
+  fetch("https://coderaas-server1.onrender.com/portfolio")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
