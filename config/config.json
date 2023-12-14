@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": "admin",
-    "database": "coderaasportfoliodb",
+    "password": "root",
+    "database": "coderaas",
     "host": "localhost",
     "dialect": "mysql"
   },

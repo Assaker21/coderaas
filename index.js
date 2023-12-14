@@ -152,9 +152,13 @@ app.get("/portfoliostatic", async (req, res) => {
 app.get("/portfolio", async (req, res) => {
   try {
     if (!req.query.id) {
-      req.query.id = (
-        await users.findOne({ where: { name: req.query.name } })
-      ).id;
+      if (req.query.name) {
+        req.query.id = (
+          await users.findOne({ where: { name: req.query.name } })
+        ).id;
+      } else {
+        req.query.id = 1;
+      }
     }
 
     const pros = (
@@ -168,6 +172,10 @@ app.get("/portfolio", async (req, res) => {
       })
     ).projects;
 
+    for (let i = 0; i < pros.length; i++) {
+      if (pros[i].tags) pros[i].tags = pros[i].tags.split("___");
+    }
+
     const exps = (
       await users.findByPk(req.query.id, {
         include: [
@@ -179,6 +187,10 @@ app.get("/portfolio", async (req, res) => {
       })
     ).experiences;
 
+    for (let i = 0; i < exps.length; i++) {
+      if (exps[i].tags) exps[i].tags = exps[i].tags.split("___");
+    }
+
     const socs = await users.findByPk(req.query.id, {
       include: [
         {
@@ -187,6 +199,10 @@ app.get("/portfolio", async (req, res) => {
         },
       ],
     });
+
+    for (let i = 0; i < socs.length; i++) {
+      if (socs[i].tags) socs[i].tags = socs[i].tags.split("___");
+    }
 
     const user = await users.findByPk(req.query.id);
 
@@ -214,38 +230,43 @@ app.get("/insert", (req, res) => {
       }
     });
 
-  experiences
-    .create({
-      date: "2018 — PRESENT",
-      title: "Some Cool Title for exp",
-      desc: `Lorem ipsum dolor sit amet`,
-      userId: 1,
-    })
-    .catch((error) => {
-      if (error) {
-        console.log("ERROR: " + error);
-      }
-    });
+  for (var i = 0; i < 5; i++) {
+    experiences
+      .create({
+        date: "2018 — PRESENT",
+        title: "Some Cool Title for exp",
+        desc: `Lorem ipsum dolor sit amet`,
+        tags: "ReactJs___SCSS___WordPress___JavaScript___TypeScript",
+        userId: 5,
+      })
+      .catch((error) => {
+        if (error) {
+          console.log("ERROR: " + error);
+        }
+      });
+  }
 
-  projects
-    .create({
-      img: "https://charbelassaker.onrender.com/media/images/flappy-stick/0.jpg",
-      title: "Some Cool Title for pro",
-      desc: `Lorem ipsum dolor sit`,
-      tags: "ReactJs___SCSS___WordPress___JavaScript___TypeScript",
-      userId: 1,
-    })
-    .catch((error) => {
-      if (error) {
-        console.log("ERROR: " + error);
-      }
-    });
+  for (var j = 0; j < 5; j++) {
+    projects
+      .create({
+        img: "https://charbelassaker.onrender.com/media/images/flappy-stick/0.jpg",
+        title: "Some Cool Title for pro",
+        desc: `Lorem ipsum dolor sit`,
+        tags: "ReactJs___SCSS___WordPress___JavaScript___TypeScript",
+        userId: 5,
+      })
+      .catch((error) => {
+        if (error) {
+          console.log("ERROR: " + error);
+        }
+      });
+  }
 
   social_medias
     .create({
       social_app: "github",
-      social_link: "https://github.com/assaker21",
-      userId: 1,
+      link: "https://github.com/assaker21",
+      userId: 5,
     })
     .catch((error) => {
       if (error) {
