@@ -2,17 +2,22 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
+const db = require("./models");
+const { users, social_medias, experiences, projects } = require("./models");
+
 app.use(
   cors({
     origin: "*",
   })
 );
 
-app.listen(3000, () => {
-  console.log(`Server is listening at http://localhost:${3000}`);
+db.sequelize.sync().then((req) => {
+  app.listen(3000, () => {
+    console.log(`Server is listening at http://localhost:${3000}`);
+  });
 });
 
-app.get("/portfolio", async (req, res) => {
+app.get("/portfoliostatic", async (req, res) => {
   res.send(
     JSON.stringify({
       name: "Charbel aasdasd",
@@ -142,4 +147,116 @@ app.get("/portfolio", async (req, res) => {
       ],
     })
   );
+});
+
+app.get("/portfolio", async (req, res) => {
+  try {
+    if (!req.query.id) {
+      req.query.id = (
+        await users.findOne({ where: { name: req.query.name } })
+      ).id;
+    }
+
+    const pros = (
+      await users.findByPk(req.query.id, {
+        include: [
+          {
+            model: projects,
+            attributes: ["id", "img", "title", "desc", "tags"],
+          },
+        ],
+      })
+    ).projects;
+
+    const exps = (
+      await users.findByPk(req.query.id, {
+        include: [
+          {
+            model: experiences,
+            attributes: ["id", "date", "title", "desc", "tags"],
+          },
+        ],
+      })
+    ).experiences;
+
+    const socs = await users.findByPk(req.query.id, {
+      include: [
+        {
+          model: social_medias,
+          attributes: ["id", "social_app", "link"],
+        },
+      ],
+    });
+
+    const user = await users.findByPk(req.query.id);
+
+    res.send({
+      user: user,
+      social_medias: socs.social_medias,
+      projects: pros,
+      experiences: exps,
+    });
+  } catch (error) {
+    res.send("Error: " + error);
+  }
+});
+
+app.get("/insert", (req, res) => {
+  users
+    .create({
+      name: req.query.name,
+      about: "In 2014, I embarked on a coding journey by creating websites, ",
+      role: "Full-Stack Developer",
+    })
+    .catch((error) => {
+      if (error) {
+        console.log("ERROR: " + error);
+      }
+    });
+
+  experiences
+    .create({
+      date: "2018 — PRESENT",
+      title: "Some Cool Title for exp",
+      desc: `Lorem ipsum dolor sit amet`,
+      userId: 1,
+    })
+    .catch((error) => {
+      if (error) {
+        console.log("ERROR: " + error);
+      }
+    });
+
+  projects
+    .create({
+      img: "https://charbelassaker.onrender.com/media/images/flappy-stick/0.jpg",
+      title: "Some Cool Title for pro",
+      desc: `Lorem ipsum dolor sit`,
+      tags: "ReactJs___SCSS___WordPress___JavaScript___TypeScript",
+      userId: 1,
+    })
+    .catch((error) => {
+      if (error) {
+        console.log("ERROR: " + error);
+      }
+    });
+
+  social_medias
+    .create({
+      social_app: "github",
+      social_link: "https://github.com/assaker21",
+      userId: 1,
+    })
+    .catch((error) => {
+      if (error) {
+        console.log("ERROR: " + error);
+      }
+    });
+
+  res.send("created successfully");
+});
+
+app.get("/delete", (req, res) => {
+  user.destroy({ where: { id: 10 } });
+  res.send("destroyed successfully");
 });
