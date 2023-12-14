@@ -157,7 +157,7 @@ app.get("/portfolio", async (req, res) => {
           await users.findOne({ where: { name: req.query.name } })
         ).id;
       } else {
-        req.query.id = 1;
+        req.query.id = 5;
       }
     }
 
