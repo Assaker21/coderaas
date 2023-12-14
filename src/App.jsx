@@ -84,8 +84,8 @@ function App() {
       <div className={"wrapper" + (!data ? " hidden" : "")}>
         <header className="header">
           <div className="info">
-            <h1>{data?.name}</h1>
-            <h2>Full-Stack Developer</h2>
+            <h1>{data?.user.name}</h1>
+            <h2>{data?.user.role}</h2>
             <button
               className="download-button"
               onClick={() => {
@@ -156,7 +156,7 @@ function App() {
         <section className="main">
           <section id="about" className="about">
             <span id="about-text">
-              {data?.about
+              {data?.user.about
                 .replaceAll("<br /> <br />", "<br /><br />")
                 .split("<br /><br />")
                 .map((item, index) => {
@@ -171,7 +171,7 @@ function App() {
           </section>
           <section id="experience" className="experience">
             <h3>Experience</h3>
-            {data?.experience.map((exp, index) => {
+            {data?.experiences.map((exp, index) => {
               return <Experience exp={exp} index={index} />;
             })}
           </section>
