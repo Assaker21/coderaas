@@ -23,6 +23,33 @@ body {
   scroll-behavior: smooth;
 }
 
+.login-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+}
+
+.login-container .login-input {
+  background-color: rgba(0, 0, 0, 0.349);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.login-container .login-button {
+  background-color: var(--text-color);
+  border: none;
+  padding: 5px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
 .loading {
   width: 100vw;
   height: 100vh;
