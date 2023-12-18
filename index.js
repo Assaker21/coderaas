@@ -1,19 +1,27 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
 
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+
 const db = require("./models");
 const { users, social_medias, experiences, projects } = require("./models");
 
+app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
 db.sequelize.sync().then((req) => {
   app.listen(3000, () => {
-    console.log(`Server is listening at http://localhost:${3000}`);
+    console.log(`Server is listening at http://localhost:3000`);
   });
 });
 
@@ -281,3 +289,52 @@ app.get("/delete", (req, res) => {
   user.destroy({ where: { id: 10 } });
   res.send("destroyed successfully");
 });
+
+app.get("/test", async (req, res) => {
+  try {
+    const us = await users.findAll();
+    res.send(JSON.stringify(us));
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.get("/hey", authenticateToken, async (req, res) => {
+  res.send("USERNAME: " + req.user.username);
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const username = req.body.username;
+
+    const user = { username: username };
+
+    console.log(username);
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "10s",
+    });
+
+    res
+      .cookie("access_token", accessToken, {
+        httpOnly: true,
+      })
+      .sendStatus(200);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+function authenticateToken(req, res, next) {
+  console.log("token");
+  const token = req.cookies.access_token;
+
+  console.log(token);
+
+  try {
+    const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = user;
+    next();
+  } catch (error) {
+    res.clearCookie("access_token").sendStatus(653);
+  }
+}
