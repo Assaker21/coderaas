@@ -9,8 +9,6 @@ const cookieParser = require("cookie-parser");
 
 const db = require("./models");
 
-app.use(express.json());
-app.use(cookieParser());
 app.use(
   cors({
     origin: [
@@ -21,6 +19,9 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
+app.use(cookieParser());
 
 db.sequelize.sync().then((req) => {
   app.listen(3000, () => {
