@@ -84,9 +84,13 @@ function App() {
 
       console.log("FETCHED DATA SUCCESSFULLY");
     } catch (error) {
-      if (error.response.status == 653) {
-        console.log("FETCHED DATA UNSUCCESSFULLY");
-        setLogin(true);
+      if (error.response) {
+        if (error.response.status == 653) {
+          console.log("FETCHED DATA UNSUCCESSFULLY");
+          setLogin(true);
+        } else {
+          console.log("FETCHED DATA UNSUCCESSFULLY BAD");
+        }
       } else {
         console.log("FETCHED DATA UNSUCCESSFULLY BAD");
       }
