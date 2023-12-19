@@ -72,9 +72,15 @@ function App() {
 
   async function fetchData2() {
     try {
-      const response = await axios.get("http://localhost:3000/hey", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://coderaas-server1.onrender.com/portfolio",
+        {
+          withCredentials: true,
+        }
+      );
+
+      //console.log(response.data);
+      setData(response.data);
 
       console.log("FETCHED DATA SUCCESSFULLY");
     } catch (error) {
@@ -91,7 +97,7 @@ function App() {
     setLogin(false);
     try {
       const response = await axios.post(
-        "http://localhost:3000/login",
+        "https://coderaas-server1.onrender.com/login",
         {
           username: username,
           password: password,
@@ -249,15 +255,6 @@ function App() {
               setUsername(e.target.value);
             }}
             placeholder="Username"
-          />
-          <input
-            className="login-input"
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            placeholder="Password"
           />
           <button className="login-button">Submit</button>
         </form>
