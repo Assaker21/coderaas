@@ -15,6 +15,7 @@ app.use(
   cors({
     origin: [
       "https://coderass-portfolio.onrender.com",
+      "https://coderaas-server1.onrender.com",
       "http://localhost:5173",
     ],
     credentials: true,
