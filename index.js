@@ -13,7 +13,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "https://coderass-portfolio.onrender.com",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
