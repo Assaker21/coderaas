@@ -7,6 +7,7 @@ const { users, social_medias, experiences, projects } = require("../models");
 
 router.get("/portfolio", authMiddleware, async (req, res) => {
   try {
+    console.log("Here");
     if (!req.query.id) {
       if (req.query.name) {
         req.query.id = (
