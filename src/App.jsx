@@ -19,7 +19,7 @@ function App() {
       const imgHeight = canvas.height;
       const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
       const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 30;
+      const imgY = 0;
       pdf.addImage(
         imgData,
         "PNG",
