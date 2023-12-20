@@ -1,133 +1,182 @@
 body {
   margin: 0;
   margin-bottom: 50px;
-}
-
-.container {
-  font-family: "Roboto", sans-serif;
-  background-color: #f7f7f7;
-  .pdf-container {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    width: 800px;
-    .title {
+  .container {
+    font-family: "Roboto", sans-serif;
+    background-color: #f7f7f7;
+    .pdf-container {
+      padding: 20px;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      text-align: center;
-      background-color: rgb(47, 120, 255);
-      height: 100px;
-      color: white;
-      font-size: 32px;
-      font-weight: 700;
-    }
-    .table {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      table {
+      flex-direction: column;
+      width: 800px;
+      margin: 0 auto;
+      .pdf-item {
+        padding: 20px;
+      }
+      .title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
-        border-collapse: collapse;
-        thead {
-          background-color: #f2f2f2;
-          th {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-          }
-        }
-        tbody {
-          tr {
-            td {
+        text-align: center;
+        background-color: rgb(47, 120, 255);
+        height: 100px;
+        color: white;
+        font-size: 32px;
+        font-weight: 700;
+      }
+      .table {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          thead {
+            background-color: #f2f2f2;
+            th {
               border: 1px solid black;
               padding: 8px;
               text-align: left;
             }
           }
-        }
-      }
-    }
-
-    .subtitle {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 10px;
-
-      font-size: 32px;
-      font-weight: 700;
-
-      .line {
-        height: 2px;
-        flex: 1;
-        background-color: black;
-      }
-    }
-
-    .risk-analysis-table {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      table {
-        background-color: rgb(255, 255, 182);
-        border-collapse: collapse;
-        border: none;
-        thead {
-          th {
-            border: none;
-            padding: 8px;
-            text-align: left;
-            border-bottom: 2px solid black;
-          }
-          th:nth-child(even) {
-            border-left: 2px solid black;
+          tbody {
+            tr {
+              td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: left;
+              }
+            }
           }
         }
-        tbody {
-          tr {
-            td {
+      }
+
+      .subtitle {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+
+        font-size: 32px;
+        font-weight: 700;
+
+        .line {
+          height: 2px;
+          flex: 1;
+          background-color: black;
+        }
+      }
+
+      .risk-analysis-table {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        table {
+          background-color: rgb(255, 255, 182);
+          border-collapse: collapse;
+          border: none;
+          border: 20px solid rgb(255, 255, 182);
+          thead {
+            th {
               border: none;
               padding: 8px;
               text-align: left;
+              border-bottom: 2px solid black;
             }
-            td:nth-child(even) {
+            th:nth-child(even) {
               border-left: 2px solid black;
+            }
+          }
+          tbody {
+            tr {
+              td {
+                border: none;
+                padding: 8px;
+                text-align: left;
+              }
+              td:nth-child(even) {
+                border-left: 2px solid black;
+              }
             }
           }
         }
       }
-    }
 
-    .perf-ratings {
-      display: flex;
-      gap: 20px;
-      .perfs {
-        flex: 1;
+      .perf-ratings {
         display: flex;
-        flex-direction: column;
         gap: 20px;
-        .perf {
+        .perfs {
+          flex: 1;
           display: flex;
-          flex-direction: row;
-          width: 100%;
+          flex-direction: column;
+          gap: 20px;
+          .perf {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            gap: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            span {
+            }
+            .arrow {
+              display: flex;
+              align-items: center;
+              flex: 1;
+
+              .arrow-tail {
+                height: 2px;
+                flex: 1;
+                background-color: black;
+              }
+
+              .arrow-head {
+                position: relative;
+                display: inline-block;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 10px 0 10px 15px;
+                border-color: transparent transparent transparent black;
+              }
+            }
+
+            .flag {
+              font-size: 32px;
+              &.red {
+                color: red;
+              }
+              &.orange {
+                color: orange;
+              }
+              &.yellow {
+                color: yellow;
+              }
+              &.yellowgreen {
+                color: yellowgreen;
+              }
+              &.green {
+                color: green;
+              }
+            }
+          }
+        }
+        .perf-levels {
+          display: flex;
+          flex-direction: column;
           gap: 20px;
           font-size: 32px;
           font-weight: 700;
-          span {
-          }
-          .arrow {
-            display: flex;
-            align-items: center;
+          .arrow.vertical {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             .arrow-tail {
-              height: 2px;
               flex: 1;
+              width: 2px;
               background-color: black;
             }
 
@@ -139,76 +188,28 @@ body {
               border-style: solid;
               border-width: 10px 0 10px 15px;
               border-color: transparent transparent transparent black;
+              transform: rotate(90deg);
             }
-          }
-
-          .flag {
-            font-size: 32px;
-            &.red {
-              color: red;
-            }
-            &.orange {
-              color: orange;
-            }
-            &.yellow {
-              color: yellow;
-            }
-            &.yellowgreen {
-              color: yellowgreen;
-            }
-            &.green {
-              color: green;
-            }
-          }
-        }
-      }
-      .perf-levels {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        font-size: 32px;
-        font-weight: 700;
-        .arrow.vertical {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-
-          .arrow-tail {
-            flex: 1;
-            width: 2px;
-            background-color: black;
-          }
-
-          .arrow-head {
-            position: relative;
-            display: inline-block;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 10px 0 10px 15px;
-            border-color: transparent transparent transparent black;
-            transform: rotate(90deg);
           }
         }
       }
     }
-  }
 
-  .pdf-button {
-    width: 100vw;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    background-color: gray;
-    height: 50px;
-    color: white;
-    font-size: 32px;
-    font-weight: 700;
+    .pdf-button {
+      width: 100vw;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background-color: gray;
+      height: 50px;
+      color: white;
+      font-size: 32px;
+      font-weight: 700;
 
-    &:hover {
-      background-color: #444444;
-      cursor: pointer;
+      &:hover {
+        background-color: #444444;
+        cursor: pointer;
+      }
     }
   }
 }

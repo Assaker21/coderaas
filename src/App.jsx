@@ -4,22 +4,43 @@ import "./App.scss";
 import Table from "./table";
 
 import html2canvas from "html2canvas";
+import html2pdf from "html2pdf.js";
 import jsPDF from "jspdf";
 
 function App() {
   const pdfRef = useRef();
-  function handleGenerateButtonClick() {
-    const input = pdfRef.current;
-    html2canvas(input).then((canvas) => {
+
+  const downloadPDF = async () => {
+    const captures = document.querySelectorAll(".pdf-item");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    var margins = {
+      top: 20,
+      bottom: 20,
+      left: 20,
+      right: 20,
+    };
+    pdf.margin = { horiz: 15, vert: 20 };
+
+    let y = 0;
+    for (let i = 0; i < captures.length; i++) {
+      const canvas = await html2canvas(captures[i]);
       const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4", true);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
       const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
       const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 0;
+      let imgY = y;
+      y += imgHeight * ratio;
+
+      if (y > pdfHeight) {
+        pdf.addPage("a4", "portrait");
+        y = 0;
+        imgY = 0;
+      }
+
       pdf.addImage(
         imgData,
         "PNG",
@@ -28,16 +49,16 @@ function App() {
         imgWidth * ratio,
         imgHeight * ratio
       );
-      pdf.save("data.pdf");
-    });
-  }
+    }
+    pdf.save("data.pdf");
+  };
 
   return (
     <>
       <div className="container">
         <div className="pdf-container" ref={pdfRef}>
-          <div className="title">Store Evaluation Dashboard</div>
-          <div className="table">
+          <div className="title pdf-item">Store Evaluation Dashboard</div>
+          <div className="table pdf-item">
             <Table
               theads={[
                 "Ref.",
@@ -94,63 +115,67 @@ function App() {
               ]}
             />
           </div>
-          <div className="subtitle">
-            <div className="line"></div>
-            Risk Analysis
-            <div className="line"></div>
-          </div>
-          <div className="risk-analysis-table">
-            <Table
-              theads={["Risk Range", "Weight"]}
-              rows={[
-                ["Low", 1],
-                ["Moderate", 2],
-                ["Critical", 3],
-              ]}
-            />
-          </div>
-          <div className="subtitle">
-            <div className="line"></div>
-            Performance Ratings
-            <div className="line"></div>
-          </div>
-          <div className="perf-ratings">
-            <div className="perfs">
-              {[
-                { title: "Unsatisfactory", value: 40, color: "red" },
-                { title: "Needs improvement", value: 60, color: "orange" },
-                { title: "Meets requirements", value: 80, color: "yellow" },
-                {
-                  title: "Exceeds requirements",
-                  value: 90,
-                  color: "yellowgreen",
-                },
-                { title: "Outstanding", value: 100, color: "green" },
-              ].map((perf, index) => {
-                return (
-                  <div className="perf" key={"Perf: " + index}>
-                    <span>{perf.title}</span>
-                    <div className="arrow">
-                      <div className="arrow-tail"></div>
-                      <div className="arrow-head"></div>
-                    </div>
-                    <span>{perf.value}%</span>
-                    <i className={"flag bx bxs-flag " + perf.color}></i>
-                  </div>
-                );
-              })}
+          <div className="pdf-item">
+            <div className="subtitle">
+              <div className="line"></div>
+              Risk Analysis
+              <div className="line"></div>
             </div>
-            <div className="perf-levels">
-              <span>Low</span>
-              <div className="arrow vertical">
-                <div className="arrow-tail"></div>
-                <div className="arrow-head"></div>
+            <div className="risk-analysis-table">
+              <Table
+                theads={["Risk Range", "Weight"]}
+                rows={[
+                  ["Low", 1],
+                  ["Moderate", 2],
+                  ["Critical", 3],
+                ]}
+              />
+            </div>
+          </div>
+          <div className="pdf-item">
+            <div className="subtitle">
+              <div className="line"></div>
+              Performance Ratings
+              <div className="line"></div>
+            </div>
+            <div className="perf-ratings">
+              <div className="perfs">
+                {[
+                  { title: "Unsatisfactory", value: 40, color: "red" },
+                  { title: "Needs improvement", value: 60, color: "orange" },
+                  { title: "Meets requirements", value: 80, color: "yellow" },
+                  {
+                    title: "Exceeds requirements",
+                    value: 90,
+                    color: "yellowgreen",
+                  },
+                  { title: "Outstanding", value: 100, color: "green" },
+                ].map((perf, index) => {
+                  return (
+                    <div className="perf" key={"Perf: " + index}>
+                      <span>{perf.title}</span>
+                      <div className="arrow">
+                        <div className="arrow-tail"></div>
+                        <div className="arrow-head"></div>
+                      </div>
+                      <span>{perf.value}%</span>
+                      <i className={"flag bx bxs-flag " + perf.color}></i>
+                    </div>
+                  );
+                })}
               </div>
-              <span>High</span>
+              <div className="perf-levels">
+                <span>Low</span>
+                <div className="arrow vertical">
+                  <div className="arrow-tail"></div>
+                  <div className="arrow-head"></div>
+                </div>
+                <span>High</span>
+              </div>
             </div>
           </div>
         </div>
-        <button className="pdf-button" onClick={handleGenerateButtonClick}>
+        <button className="pdf-button" onClick={downloadPDF}>
           Generate
         </button>
       </div>
