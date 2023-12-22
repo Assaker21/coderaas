@@ -1,11 +1,10 @@
 {
   "development": {
-    "username": "avnadmin",
-    "password": "AVNS_uMnkN1FNoistG7VD1QD",
-    "database": "defaultdb",
-    "host": "coderaas-mysql-v1-coderaas-v1.a.aivencloud.com",
-    "dialect": "mysql",
-    "port":28929
+    "username": "root",
+    "password": "admin",
+    "database": "coderaas",
+    "host": "localhost",
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
