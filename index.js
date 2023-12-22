@@ -153,11 +153,57 @@ app.get("/pdf-generator", async (req, res) => {
           ],
         }),
       },
+      {
+        type: "hist",
+        data: JSON.stringify({
+          max_value: 100,
+          parts: ["Branch 1", "Branch 2", "Branch 3"],
+          data: [
+            { name: "June", b1: 22 },
+            { name: "July", b1: 45 },
+            { name: "August", b1: 30 },
+            { name: "June", b1: 40 },
+            { name: "July", b2: 67 },
+            { name: "August", b2: 63 },
+            { name: "June", b2: 60 },
+            { name: "July", b2: 77 },
+            { name: "August", b3: 83 },
+          ],
+        }),
+      },
+      {
+        type: "pies",
+        data: JSON.stringify([
+          {
+            name: "Branch 1",
+            value: 30.13,
+            footer: "Overall Performance ↓",
+            color: "red",
+          },
+          {
+            name: "Branch 2",
+            value: 62.79,
+            footer: "Overall Performance ↓",
+            color: "yellow",
+          },
+          {
+            name: "Branch 3",
+            value: 83.2,
+            footer: "Overall Performance ↑",
+            color: "green",
+          },
+        ]),
+      },
     ]);*/
+
+    /*for (let i = 33; i < 39; i++) {
+      await pdf_items.destroy({
+        where: { id: i },
+      });
+    }*/
 
     const items = await pdf_items.findAll();
     res.send(items);
-  } catch (error) {
     /*res.send(
       JSON.stringify([
         { type: "title", data: "Store evaluation dashboard" },
@@ -261,8 +307,50 @@ app.get("/pdf-generator", async (req, res) => {
             ],
           }),
         },
+        {
+          type: "hist",
+          data: JSON.stringify({
+            max_value: 100,
+            parts: ["Branch 1", "Branch 2", "Branch 3"],
+            data: [
+              { name: "June", b1: 22 },
+              { name: "July", b1: 45 },
+              { name: "August", b1: 30 },
+              { name: "June", b1: 40 },
+              { name: "July", b2: 67 },
+              { name: "August", b2: 63 },
+              { name: "June", b2: 60 },
+              { name: "July", b2: 77 },
+              { name: "August", b3: 83 },
+            ],
+          }),
+        },
+        {
+          type: "pies",
+          data: JSON.stringify([
+            {
+              name: "Branch 1",
+              value: 30.13,
+              footer: "Overall Performance ↓",
+              color: "red",
+            },
+            {
+              name: "Branch 2",
+              value: 62.79,
+              footer: "Overall Performance ↓",
+              color: "yellow",
+            },
+            {
+              name: "Branch 3",
+              value: 83.2,
+              footer: "Overall Performance ↑",
+              color: "green",
+            },
+          ]),
+        },
       ])
     );*/
+  } catch (error) {
     res.send({ error: error });
     console.log("ERROR: " + error);
   }
