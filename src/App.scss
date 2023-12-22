@@ -5,14 +5,79 @@ body {
     font-family: "Roboto", sans-serif;
     background-color: #f7f7f7;
     .pdf-container {
-      padding: 20px;
+      //padding: 20px;
       display: flex;
       flex-direction: column;
-      width: 800px;
+      width: 900px;
       margin: 0 auto;
       .pdf-item {
         padding: 20px;
       }
+
+      .legend {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding-left: 120px;
+        padding-right: 50px;
+        align-items: center;
+        .legend-item {
+          flex: 1;
+          text-align: center;
+        }
+      }
+
+      .pie-charts {
+        display: flex;
+        flex-direction: row;
+        gap: 40px;
+
+        .pie-chart {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 20px;
+
+          .pie-chart-circle {
+            background: conic-gradient(
+              from 0deg,
+              red 0%,
+              red 50%,
+              #98958e 50%,
+              #98958e 100%
+            );
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 500px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .pie-center-value {
+              background: white;
+              width: 70%;
+              height: 70%;
+              border-radius: 500px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: black;
+            }
+          }
+          .pie-title {
+            font-size: 24px;
+            font-weight: 600;
+          }
+          .pie-footer {
+            font-size: 18px;
+            font-weight: 600;
+          }
+        }
+      }
+
       .title {
         display: flex;
         justify-content: center;

@@ -1,60 +1,52 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.scss";
-
-import Table from "./table";
-
 import axios from "axios";
-
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-function App() {
-  const pdfRef = useRef();
+import "./App.scss";
 
-  const downloadPDF = async () => {
+import Table from "./components/table";
+import Pie_Chart from "./components/pie_chart";
+import Bar_Chart from "./components/bar_chart";
+
+function App() {
+  const [items, setItems] = useState(null);
+
+  const dragItem = useRef(0);
+  const draggedOverItem = useRef(0);
+
+  async function downloadPDF() {
     const captures = document.querySelectorAll(".pdf-item");
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    var margins = {
-      top: 20,
-      bottom: 20,
-      left: 20,
-      right: 20,
-    };
-    pdf.margin = { horiz: 15, vert: 20 };
+    const pdf = new jsPDF("p", "px", "a4");
 
     let y = 0;
     for (let i = 0; i < captures.length; i++) {
       const canvas = await html2canvas(captures[i]);
+      console.log(canvas);
       const imgData = canvas.toDataURL("image/png");
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+
+      const ratio = pdfWidth / imgWidth;
+
+      var pdfImageHeight = imgHeight * ratio;
       const imgX = (pdfWidth - imgWidth * ratio) / 2;
       let imgY = y;
-      y += imgHeight * ratio;
+      y += pdfImageHeight;
 
       if (y > pdfHeight) {
         pdf.addPage("a4", "portrait");
-        y = 0;
+        y = pdfImageHeight;
         imgY = 0;
       }
 
-      pdf.addImage(
-        imgData,
-        "PNG",
-        imgX,
-        imgY,
-        imgWidth * ratio,
-        imgHeight * ratio
-      );
+      pdf.addImage(imgData, "PNG", imgX, imgY, pdfWidth, imgHeight * ratio);
     }
     pdf.save("data.pdf");
-  };
-
-  const [items, setItems] = useState(null);
+  }
 
   async function fetchData() {
     try {
@@ -73,13 +65,6 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const dragItem = useRef(0);
-  const draggedOverItem = useRef(0);
-
   function handleSort() {
     let itemsClone = [...items];
 
@@ -89,12 +74,16 @@ function App() {
     setItems(itemsClone);
   }
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
       {!items && <>Loading</>}
       {items && (
         <div className="container">
-          <div className="pdf-container" ref={pdfRef}>
+          <div className="pdf-container">
             {items.map((item, index) => {
               return (
                 <div
@@ -173,6 +162,27 @@ function App() {
                         </div>
                       </div>
                     </>
+                  )}
+                  {item.type == "hist" && (
+                    <Bar_Chart
+                      data={item.data.data}
+                      max_value={item.data.max_value}
+                      parts={item.data.parts} // ["Branch 1", "Branch 2", "Branch 3"]
+                    />
+                  )}
+                  {item.type == "pies" && (
+                    <div className="pie-charts">
+                      {item.data.map((pie) => {
+                        return (
+                          <Pie_Chart
+                            title={pie.name}
+                            data={pie.value}
+                            footer={pie.footer}
+                            color={pie.color}
+                          />
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               );
