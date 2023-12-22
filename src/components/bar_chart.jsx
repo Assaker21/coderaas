@@ -8,13 +8,19 @@ import {
   Bar,
 } from "recharts";
 
+// Bar chart, aka histogram.
+
 function Bar_Chart({ data, parts, max_value }) {
   function Fixed_Legend() {
     return (
       <>
         <div className="legend">
-          {parts.map((part) => {
-            return <span className="legend-item">{part}</span>;
+          {parts.map((part, index) => {
+            return (
+              <span key={"Part: " + index} className="legend-item">
+                {part}
+              </span>
+            );
           })}
         </div>
       </>

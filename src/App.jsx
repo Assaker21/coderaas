@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 import "./App.scss";
 
@@ -9,73 +7,50 @@ import Table from "./components/table";
 import Pie_Chart from "./components/pie_chart";
 import Bar_Chart from "./components/bar_chart";
 
+import download_pdf from "./utils/generate_pdf";
+
 function App() {
-  const [items, setItems] = useState(null);
+  const [items, setItems] = useState(null); // pdf items are fetched and put inside items
+  const [fetching, setFetching] = useState(false); // shows the current state of the fetching process
 
-  const dragItem = useRef(0);
-  const draggedOverItem = useRef(0);
-
-  async function downloadPDF() {
-    const captures = document.querySelectorAll(".pdf-item");
-
-    const pdf = new jsPDF("p", "px", "a4");
-
-    let y = 0;
-    for (let i = 0; i < captures.length; i++) {
-      const canvas = await html2canvas(captures[i]);
-      console.log(canvas);
-      const imgData = canvas.toDataURL("image/png");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-
-      const ratio = pdfWidth / imgWidth;
-
-      var pdfImageHeight = imgHeight * ratio;
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      let imgY = y;
-      y += pdfImageHeight;
-
-      if (y > pdfHeight) {
-        pdf.addPage("a4", "portrait");
-        y = pdfImageHeight;
-        imgY = 0;
-      }
-
-      pdf.addImage(imgData, "PNG", imgX, imgY, pdfWidth, imgHeight * ratio);
-    }
-    pdf.save("data.pdf");
-  }
-
-  async function fetchData() {
-    try {
-      const response = await axios.get("http://localhost:3000/pdf-generator");
-      const receivedItems = response.data;
-      console.log(receivedItems);
-      for (let i = 0; i < receivedItems.length; i++) {
-        if (receivedItems[i].type != "title") {
-          receivedItems[i].data = JSON.parse(receivedItems[i].data);
-        }
-      }
-      setItems(receivedItems);
-      console.log(receivedItems);
-    } catch (error) {
-      console.log("ERROR: " + error);
-    }
-  }
+  const dragItem = useRef(0); // the item's index that is currently being dragged
+  const draggedOverItem = useRef(0); // the item's index that we are currently dragging something else over it
 
   function handleSort() {
+    // function to handle the sorting where we flip between items
     let itemsClone = [...items];
 
-    const removedItem = itemsClone.splice(dragItem.current, 1);
-    itemsClone.splice(draggedOverItem.current, 0, removedItem[0]);
+    const removedItem = itemsClone.splice(dragItem.current, 1); // remove item from somewhere and
+    itemsClone.splice(draggedOverItem.current, 0, removedItem[0]); // put it somewhere else
 
     setItems(itemsClone);
   }
 
   useEffect(() => {
-    fetchData();
+    (async () => {
+      // fetch from the server
+      if (fetching) return;
+
+      try {
+        setFetching(true);
+
+        const response = await axios.get("http://localhost:3000/pdf-generator");
+        const receivedItems = response.data;
+
+        for (let i = 0; i < receivedItems.length; i++) {
+          if (receivedItems[i].type != "title") {
+            receivedItems[i].data = JSON.parse(receivedItems[i].data);
+          }
+        }
+
+        setItems(receivedItems);
+
+        setFetching(false);
+      } catch (error) {
+        console.log("ERROR: " + error);
+        setFetching(false);
+      }
+    })();
   }, []);
 
   return (
@@ -87,7 +62,7 @@ function App() {
             {items.map((item, index) => {
               return (
                 <div
-                  key={item.type}
+                  key={item.type + " " + index}
                   draggable
                   onDragStart={() => {
                     dragItem.current = index;
@@ -167,18 +142,19 @@ function App() {
                     <Bar_Chart
                       data={item.data.data}
                       max_value={item.data.max_value}
-                      parts={item.data.parts} // ["Branch 1", "Branch 2", "Branch 3"]
+                      parts={item.data.parts}
                     />
                   )}
                   {item.type == "pies" && (
                     <div className="pie-charts">
-                      {item.data.map((pie) => {
+                      {item.data.map((pie, index) => {
                         return (
                           <Pie_Chart
                             title={pie.name}
                             data={pie.value}
                             footer={pie.footer}
                             color={pie.color}
+                            keyProp={"Pie: " + index}
                           />
                         );
                       })}
@@ -188,7 +164,7 @@ function App() {
               );
             })}
           </div>
-          <button className="pdf-button" onClick={downloadPDF}>
+          <button className="pdf-button" onClick={download_pdf}>
             Generate
           </button>
         </div>
