@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.scss";
 
 import Table from "./table";
 
+import axios from "axios";
+
 import html2canvas from "html2canvas";
-import html2pdf from "html2pdf.js";
 import jsPDF from "jspdf";
 
 function App() {
@@ -53,132 +54,135 @@ function App() {
     pdf.save("data.pdf");
   };
 
+  const [items, setItems] = useState(null);
+
+  async function fetchData() {
+    try {
+      const response = await axios.get("http://localhost:3000/pdf-generator");
+      const receivedItems = response.data;
+      console.log(receivedItems);
+      for (let i = 0; i < receivedItems.length; i++) {
+        if (receivedItems[i].type != "title") {
+          receivedItems[i].data = JSON.parse(receivedItems[i].data);
+        }
+      }
+      setItems(receivedItems);
+      console.log(receivedItems);
+    } catch (error) {
+      console.log("ERROR: " + error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const dragItem = useRef(0);
+  const draggedOverItem = useRef(0);
+
+  function handleSort() {
+    let itemsClone = [...items];
+
+    const removedItem = itemsClone.splice(dragItem.current, 1);
+    itemsClone.splice(draggedOverItem.current, 0, removedItem[0]);
+
+    setItems(itemsClone);
+  }
+
   return (
     <>
-      <div className="container">
-        <div className="pdf-container" ref={pdfRef}>
-          <div className="title pdf-item">Store Evaluation Dashboard</div>
-          <div className="table pdf-item">
-            <Table
-              theads={[
-                "Ref.",
-                "Category",
-                "Weight",
-                "Standard Points",
-                "Deviations Points",
-                "N/A Points",
-                "Score %",
-              ]}
-              rows={[
-                ["A", "Hospitality", "20", "11", "5", "4", "68.75%"],
-                [
-                  "B",
-                  "Maintenance and General Safety",
-                  "25",
-                  "12",
-                  "9",
-                  "0",
-                  "57.14%",
-                ],
-                [
-                  "C",
-                  "Cleanliness - Exterior and Interior",
-                  "17",
-                  "11",
-                  "5",
-                  "4",
-                  "47.06%",
-                ],
-                ["D", "Personal Hygiene", "20", "11", "5", "4", "30.00%"],
-                ["E", "Receiving and Storage", "30", "11", "5", "4", "14.81%"],
-                ["F", "Food handling", "55", "11", "5", "4", "23.26%"],
-                [
-                  "G",
-                  "Conformity to recipe book",
-                  "3",
-                  "11",
-                  "5",
-                  "4",
-                  "0.00%",
-                ],
-                [
-                  "H",
-                  "Conformity to Legal requirements",
-                  "10",
-                  "11",
-                  "5",
-                  "4",
-                  "0.00%",
-                ],
-                ["", "Total", "180", "51", "99", "30", "34.00%"],
-                ["", "Total %", "100%", "28.33%", "55.00%", "16.67%", "34.00%"],
-              ]}
-            />
-          </div>
-          <div className="pdf-item">
-            <div className="subtitle">
-              <div className="line"></div>
-              Risk Analysis
-              <div className="line"></div>
-            </div>
-            <div className="risk-analysis-table">
-              <Table
-                theads={["Risk Range", "Weight"]}
-                rows={[
-                  ["Low", 1],
-                  ["Moderate", 2],
-                  ["Critical", 3],
-                ]}
-              />
-            </div>
-          </div>
-          <div className="pdf-item">
-            <div className="subtitle">
-              <div className="line"></div>
-              Performance Ratings
-              <div className="line"></div>
-            </div>
-            <div className="perf-ratings">
-              <div className="perfs">
-                {[
-                  { title: "Unsatisfactory", value: 40, color: "red" },
-                  { title: "Needs improvement", value: 60, color: "orange" },
-                  { title: "Meets requirements", value: 80, color: "yellow" },
-                  {
-                    title: "Exceeds requirements",
-                    value: 90,
-                    color: "yellowgreen",
-                  },
-                  { title: "Outstanding", value: 100, color: "green" },
-                ].map((perf, index) => {
-                  return (
-                    <div className="perf" key={"Perf: " + index}>
-                      <span>{perf.title}</span>
-                      <div className="arrow">
-                        <div className="arrow-tail"></div>
-                        <div className="arrow-head"></div>
-                      </div>
-                      <span>{perf.value}%</span>
-                      <i className={"flag bx bxs-flag " + perf.color}></i>
+      {!items && <>Loading</>}
+      {items && (
+        <div className="container">
+          <div className="pdf-container" ref={pdfRef}>
+            {items.map((item, index) => {
+              return (
+                <div
+                  key={item.type}
+                  draggable
+                  onDragStart={() => {
+                    dragItem.current = index;
+                  }}
+                  onDragEnter={() => {
+                    draggedOverItem.current = index;
+                  }}
+                  onDragEnd={handleSort}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                  }}
+                  className="pdf-item"
+                >
+                  {item.type == "title" && (
+                    <div className="title">{item.data}</div>
+                  )}
+                  {item.type == "table" && (
+                    <div className="table">
+                      <Table
+                        theads={item.data.table.theads}
+                        rows={item.data.table.rows}
+                      />
                     </div>
-                  );
-                })}
-              </div>
-              <div className="perf-levels">
-                <span>Low</span>
-                <div className="arrow vertical">
-                  <div className="arrow-tail"></div>
-                  <div className="arrow-head"></div>
+                  )}
+                  {item.type == "risk-analysis-table" && (
+                    <>
+                      <div className="subtitle">
+                        <div className="line"></div>
+                        {item.data.subtitle}
+                        <div className="line"></div>
+                      </div>
+                      <div className="risk-analysis-table">
+                        <Table
+                          theads={item.data.table.theads}
+                          rows={item.data.table.rows}
+                        />
+                      </div>
+                    </>
+                  )}
+                  {item.type == "perf" && (
+                    <>
+                      <div className="subtitle">
+                        <div className="line"></div>
+                        {item.data.subtitle}
+                        <div className="line"></div>
+                      </div>
+                      <div className="perf-ratings">
+                        <div className="perfs">
+                          {item.data.items.map((perf, index) => {
+                            return (
+                              <div className="perf" key={"Perf: " + index}>
+                                <span>{perf.title}</span>
+                                <div className="arrow">
+                                  <div className="arrow-tail"></div>
+                                  <div className="arrow-head"></div>
+                                </div>
+                                <span>{perf.value}%</span>
+                                <i
+                                  className={"flag bx bxs-flag " + perf.color}
+                                ></i>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="perf-levels">
+                          <span>Low</span>
+                          <div className="arrow vertical">
+                            <div className="arrow-tail"></div>
+                            <div className="arrow-head"></div>
+                          </div>
+                          <span>High</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <span>High</span>
-              </div>
-            </div>
+              );
+            })}
           </div>
+          <button className="pdf-button" onClick={downloadPDF}>
+            Generate
+          </button>
         </div>
-        <button className="pdf-button" onClick={downloadPDF}>
-          Generate
-        </button>
-      </div>
+      )}
     </>
   );
 }
