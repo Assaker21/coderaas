@@ -182,7 +182,7 @@ var session = (0, import_session.statelessSessions)({
 var keystone_default = withAuth(
   (0, import_core2.config)({
     server: {
-      cors: { origin: ["http://localhost:7777", "http://localhost:5173"], credentials: true }
+      cors: { origin: ["http://localhost:7777", "http://localhost:5173", "https://coderaas-pdf-generator.onrender.com"], credentials: true }
     },
     db: {
       // we're using sqlite for the fastest startup experience

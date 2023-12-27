@@ -17,7 +17,7 @@ import { withAuth, session } from './auth';
 export default withAuth(
   config({
     server: {
-      cors: { origin: ['http://localhost:7777', "http://localhost:5173"], credentials: true },
+      cors: { origin: ['http://localhost:7777', "http://localhost:5173", "https://coderaas-pdf-generator.onrender.com"], credentials: true },
     },
     db: {
       // we're using sqlite for the fastest startup experience
