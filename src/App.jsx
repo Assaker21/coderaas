@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useQuery, gql } from "@apollo/client";
 
 import "./App.scss";
 
@@ -9,24 +10,61 @@ import Bar_Chart from "./components/bar_chart";
 
 import download_pdf from "./utils/generate_pdf";
 
+const ITEMS_QUERY = gql`
+  {
+    pDFItem2s {
+      data
+      id
+      type
+    }
+  }
+`;
+
 function App() {
   const [items, setItems] = useState(null); // pdf items are fetched and put inside items
-  const [fetching, setFetching] = useState(false); // shows the current state of the fetching process
+  //const [fetching, setFetching] = useState(false); // shows the current state of the fetching process
 
   const dragItem = useRef(0); // the item's index that is currently being dragged
   const draggedOverItem = useRef(0); // the item's index that we are currently dragging something else over it
 
+  const { data, loading, error } = useQuery(ITEMS_QUERY);
+  if (loading) return "Loading...";
+  if (error) return <pre>{error}</pre>;
+  const i = data.pDFItem2s;
+
+  /*useEffect(() => {
+    result = useQuery(ITEMS_QUERY);
+    data = result.data;
+    loading = result.loading;
+    error = result.error;
+
+    if (loading) {
+    } else if (error) {
+    } else {
+      setItems(data.pDFItem2s);
+    }
+  }, []);*/
+
   function handleSort() {
     // function to handle the sorting where we flip between items
-    let itemsClone = [...items];
+    if (!items) {
+      let itemsClone = [...i];
 
-    const removedItem = itemsClone.splice(dragItem.current, 1); // remove item from somewhere and
-    itemsClone.splice(draggedOverItem.current, 0, removedItem[0]); // put it somewhere else
+      const removedItem = itemsClone.splice(dragItem.current, 1); // remove item from somewhere and
+      itemsClone.splice(draggedOverItem.current, 0, removedItem[0]); // put it somewhere else
 
-    setItems(itemsClone);
+      setItems(itemsClone);
+    } else {
+      let itemsClone = [...items];
+
+      const removedItem = itemsClone.splice(dragItem.current, 1); // remove item from somewhere and
+      itemsClone.splice(draggedOverItem.current, 0, removedItem[0]); // put it somewhere else
+
+      setItems(itemsClone);
+    }
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     (async () => {
       // fetch from the server
       if (fetching) return;
@@ -51,11 +89,11 @@ function App() {
         setFetching(false);
       }
     })();
-  }, []);
+  }, []);*/
 
   return (
     <>
-      {!items && <>Loading</>}
+      {/*!items && <>Loading</>*/ !items && setItems(i)}
       {items && (
         <div className="container">
           <div className="pdf-container">
@@ -77,7 +115,7 @@ function App() {
                   className="pdf-item"
                 >
                   {item.type == "title" && (
-                    <div className="title">{item.data}</div>
+                    <div className="title">{item.data.data}</div>
                   )}
                   {item.type == "table" && (
                     <div className="table">
