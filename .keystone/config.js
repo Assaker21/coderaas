@@ -129,13 +129,6 @@ var lists = {
       posts: (0, import_fields.relationship)({ ref: "Post.tags", many: true })
     }
   }),
-  PDF_Item: (0, import_core.list)({
-    access: import_access.allowAll,
-    fields: {
-      type: (0, import_fields.text)(),
-      data: (0, import_fields.text)()
-    }
-  }),
   PDF_Item_2: (0, import_core.list)({
     access: import_access.allowAll,
     fields: {

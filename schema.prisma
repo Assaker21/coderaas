@@ -37,12 +37,6 @@ model Tag {
   posts Post[] @relation("Post_tags")
 }
 
-model PDF_Item {
-  id   String @id @default(cuid())
-  type String @default("")
-  data String @default("")
-}
-
 model PDF_Item_2 {
   id   String  @id @default(cuid())
   type String  @default("")

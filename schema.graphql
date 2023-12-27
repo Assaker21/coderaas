@@ -254,46 +254,6 @@ input TagCreateInput {
   posts: PostRelateToManyForCreateInput
 }
 
-type PDF_Item {
-  id: ID!
-  type: String
-  data: String
-}
-
-input PDF_ItemWhereUniqueInput {
-  id: ID
-}
-
-input PDF_ItemWhereInput {
-  AND: [PDF_ItemWhereInput!]
-  OR: [PDF_ItemWhereInput!]
-  NOT: [PDF_ItemWhereInput!]
-  id: IDFilter
-  type: StringFilter
-  data: StringFilter
-}
-
-input PDF_ItemOrderByInput {
-  id: OrderDirection
-  type: OrderDirection
-  data: OrderDirection
-}
-
-input PDF_ItemUpdateInput {
-  type: String
-  data: String
-}
-
-input PDF_ItemUpdateArgs {
-  where: PDF_ItemWhereUniqueInput!
-  data: PDF_ItemUpdateInput!
-}
-
-input PDF_ItemCreateInput {
-  type: String
-  data: String
-}
-
 type PDF_Item_2 {
   id: ID!
   type: String
@@ -356,12 +316,6 @@ type Mutation {
   updateTags(data: [TagUpdateArgs!]!): [Tag]
   deleteTag(where: TagWhereUniqueInput!): Tag
   deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
-  createPDF_Item(data: PDF_ItemCreateInput!): PDF_Item
-  createPDFItems(data: [PDF_ItemCreateInput!]!): [PDF_Item]
-  updatePDF_Item(where: PDF_ItemWhereUniqueInput!, data: PDF_ItemUpdateInput!): PDF_Item
-  updatePDFItems(data: [PDF_ItemUpdateArgs!]!): [PDF_Item]
-  deletePDF_Item(where: PDF_ItemWhereUniqueInput!): PDF_Item
-  deletePDFItems(where: [PDF_ItemWhereUniqueInput!]!): [PDF_Item]
   createPDF_Item_2(data: PDF_Item_2CreateInput!): PDF_Item_2
   createPDFItem2s(data: [PDF_Item_2CreateInput!]!): [PDF_Item_2]
   updatePDF_Item_2(where: PDF_Item_2WhereUniqueInput!, data: PDF_Item_2UpdateInput!): PDF_Item_2
@@ -400,9 +354,6 @@ type Query {
   tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
   tagsCount(where: TagWhereInput! = {}): Int
-  pDFItems(where: PDF_ItemWhereInput! = {}, orderBy: [PDF_ItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PDF_ItemWhereUniqueInput): [PDF_Item!]
-  pDF_Item(where: PDF_ItemWhereUniqueInput!): PDF_Item
-  pDFItemsCount(where: PDF_ItemWhereInput! = {}): Int
   pDFItem2s(where: PDF_Item_2WhereInput! = {}, orderBy: [PDF_Item_2OrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PDF_Item_2WhereUniqueInput): [PDF_Item_2!]
   pDF_Item_2(where: PDF_Item_2WhereUniqueInput!): PDF_Item_2
   pDFItem2sCount(where: PDF_Item_2WhereInput! = {}): Int

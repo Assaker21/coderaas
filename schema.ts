@@ -144,15 +144,6 @@ export const lists: Lists = {
     },
   }),
 
-  PDF_Item:list({
-    access: allowAll,
-
-    fields: {
-      type: text(),
-      data: text()
-    }
-  }),
-
   PDF_Item_2:list({
     access: allowAll,
     fields:{
