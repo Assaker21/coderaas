@@ -292,6 +292,46 @@ input PDF_Item_2CreateInput {
   data: JSON
 }
 
+type Navigation_Menu {
+  id: ID!
+  value: String
+  address: String
+}
+
+input Navigation_MenuWhereUniqueInput {
+  id: ID
+}
+
+input Navigation_MenuWhereInput {
+  AND: [Navigation_MenuWhereInput!]
+  OR: [Navigation_MenuWhereInput!]
+  NOT: [Navigation_MenuWhereInput!]
+  id: IDFilter
+  value: StringFilter
+  address: StringFilter
+}
+
+input Navigation_MenuOrderByInput {
+  id: OrderDirection
+  value: OrderDirection
+  address: OrderDirection
+}
+
+input Navigation_MenuUpdateInput {
+  value: String
+  address: String
+}
+
+input Navigation_MenuUpdateArgs {
+  where: Navigation_MenuWhereUniqueInput!
+  data: Navigation_MenuUpdateInput!
+}
+
+input Navigation_MenuCreateInput {
+  value: String
+  address: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -322,6 +362,12 @@ type Mutation {
   updatePDFItem2s(data: [PDF_Item_2UpdateArgs!]!): [PDF_Item_2]
   deletePDF_Item_2(where: PDF_Item_2WhereUniqueInput!): PDF_Item_2
   deletePDFItem2s(where: [PDF_Item_2WhereUniqueInput!]!): [PDF_Item_2]
+  createNavigation_Menu(data: Navigation_MenuCreateInput!): Navigation_Menu
+  createNavigationMenus(data: [Navigation_MenuCreateInput!]!): [Navigation_Menu]
+  updateNavigation_Menu(where: Navigation_MenuWhereUniqueInput!, data: Navigation_MenuUpdateInput!): Navigation_Menu
+  updateNavigationMenus(data: [Navigation_MenuUpdateArgs!]!): [Navigation_Menu]
+  deleteNavigation_Menu(where: Navigation_MenuWhereUniqueInput!): Navigation_Menu
+  deleteNavigationMenus(where: [Navigation_MenuWhereUniqueInput!]!): [Navigation_Menu]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -357,6 +403,9 @@ type Query {
   pDFItem2s(where: PDF_Item_2WhereInput! = {}, orderBy: [PDF_Item_2OrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PDF_Item_2WhereUniqueInput): [PDF_Item_2!]
   pDF_Item_2(where: PDF_Item_2WhereUniqueInput!): PDF_Item_2
   pDFItem2sCount(where: PDF_Item_2WhereInput! = {}): Int
+  navigationMenus(where: Navigation_MenuWhereInput! = {}, orderBy: [Navigation_MenuOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: Navigation_MenuWhereUniqueInput): [Navigation_Menu!]
+  navigation_Menu(where: Navigation_MenuWhereUniqueInput!): Navigation_Menu
+  navigationMenusCount(where: Navigation_MenuWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -42,3 +42,9 @@ model PDF_Item_2 {
   type String  @default("")
   data String?
 }
+
+model Navigation_Menu {
+  id      String @id @default(cuid())
+  value   String @default("")
+  address String @default("")
+}

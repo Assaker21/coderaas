@@ -135,6 +135,13 @@ var lists = {
       type: (0, import_fields.text)(),
       data: (0, import_fields.json)()
     }
+  }),
+  Navigation_Menu: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      value: (0, import_fields.text)(),
+      address: (0, import_fields.text)()
+    }
   })
 };
 
