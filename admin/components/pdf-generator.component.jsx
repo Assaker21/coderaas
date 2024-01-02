@@ -21,28 +21,24 @@ const ITEMS_QUERY = gql`
 
 function PdfGeneratorComponent() {
   const [items, setItems] = useState(null); // pdf items are fetched and put inside items
-  //const [fetching, setFetching] = useState(false); // shows the current state of the fetching process
 
   const dragItem = useRef(0); // the item's index that is currently being dragged
   const draggedOverItem = useRef(0); // the item's index that we are currently dragging something else over it
+
+  useEffect(() => {
+    const interval = 5000;
+
+    const intervalId = setInterval(() => {
+      download_pdf();
+    }, interval);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const { data, loading, error } = useQuery(ITEMS_QUERY);
   if (loading) return "Loading...";
   if (error) return <pre>{error}</pre>;
   const i = data.pDFItem2s;
-
-  /*useEffect(() => {
-    result = useQuery(ITEMS_QUERY);
-    data = result.data;
-    loading = result.loading;
-    error = result.error;
-
-    if (loading) {
-    } else if (error) {
-    } else {
-      setItems(data.pDFItem2s);
-    }
-  }, []);*/
 
   function handleSort() {
     // function to handle the sorting where we flip between items
@@ -63,36 +59,9 @@ function PdfGeneratorComponent() {
     }
   }
 
-  /*useEffect(() => {
-    (async () => {
-      // fetch from the server
-      if (fetching) return;
-
-      try {
-        setFetching(true);
-
-        const response = await axios.get("http://localhost:3000/pdf-generator");
-        const receivedItems = response.data;
-
-        for (let i = 0; i < receivedItems.length; i++) {
-          if (receivedItems[i].type != "title") {
-            receivedItems[i].data = JSON.parse(receivedItems[i].data);
-          }
-        }
-
-        setItems(receivedItems);
-
-        setFetching(false);
-      } catch (error) {
-        console.log("ERROR: " + error);
-        setFetching(false);
-      }
-    })();
-  }, []);*/
-
   return (
     <>
-      {/*!items && <>Loading</>*/ !items && setItems(i)}
+      {!items && setItems(i)}
       {items && (
         <div className="container">
           <div className="pdf-container">
